@@ -351,39 +351,49 @@ function initSnow(){
 
 
 // GSAP ANIMATIONS (scroll reveal)
-function initAnimations(){
-  gsap.utils.toArray(".reveal").forEach(el=>{
-    gsap.from(el,{
-      opacity:0,y:16,filter:"blur(6px)",
-      scrollTrigger:{trigger:el,start:"top 85%"},
-      duration:.7,ease:"power2.out"
+function initAnimations() {
+  // animação padrão de reveal
+  gsap.utils.toArray(".reveal").forEach(el => {
+    gsap.from(el, {
+      opacity: 0,
+      y: 16,
+      filter: "blur(6px)",
+      duration: 0.7,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: el,
+        start: "top 85%",
+        once: true // 🔥 importante
+      }
     });
   });
 
-
+  // timeline (início / fim)
   gsap.from(".timeline__item", {
-  opacity: 0,
-  y: 20,
-  stagger: 0.25,
-  duration: 0.8,
-  ease: "power2.out",
-  scrollTrigger: {
-    trigger: "#timeline",
-    start: "top 80%"
-  }
-});
+    opacity: 0,
+    y: 20,
+    stagger: 0.25,
+    duration: 0.8,
+    ease: "power2.out",
+    scrollTrigger: {
+      trigger: "#timeline",
+      start: "top 80%",
+      once: true
+    }
+  });
 
-   gsap.from(".section--playlist-final .card", {
-  opacity: 0,
-  y: 20,
-  duration: 0.8,
-  ease: "power2.out",
-  scrollTrigger: {
-    trigger: ".section--playlist-final",
-    start: "top 80%",
-  }
-});
-
+  // playlist final (garantia extra)
+  gsap.from(".section--playlist-final .card", {
+    opacity: 0,
+    y: 20,
+    duration: 0.8,
+    ease: "power2.out",
+    scrollTrigger: {
+      trigger: ".section--playlist-final",
+      start: "top 85%",
+      once: true
+    }
+  });
 }
 
 function initTypewriter() {
