@@ -421,6 +421,27 @@ body{
   width:8px;height:8px;border-radius:999px;
   background: linear-gradient(135deg, rgba(187,166,255,.9), rgba(255,209,247,.65));
 }
+.pickerItem.is-selected {
+  border-color: rgba(187,166,255,.9);
+  background: linear-gradient(
+    135deg,
+    rgba(187,166,255,.18),
+    rgba(255,209,247,.08)
+  );
+}
+
+.pickerItem.is-selected .pickerItem__radio {
+  border-color: rgba(187,166,255,1);
+}
+
+.pickerItem.is-selected .pickerItem__radio::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #bba6ff;
+  display: block;
+}
 
 .ticket--print {
   width: 320px;
@@ -550,6 +571,122 @@ body{
 .ticket.is-used .stamp{
   opacity:.85;
 }
+
+.ticket--preview {
+  /* background: linear-gradient(135deg, #b10f2e, #8e0c25); */
+  border: none;
+  padding: 0;
+}
+
+.ticketPreview {
+  display: flex;
+  height: 140px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.ticketPreview__side {
+  width: 64px;
+  background: #8e0c25;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.ticketPreview__badge {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(187,166,255,.9), rgba(255,209,247,.7));
+  color: #000;
+}
+
+.ticketPreview__label {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+  display: block;
+}
+
+.ticketPreview__title {
+  font-size: 20px;
+  color: #000;
+  margin: 6px 0 10px;
+}
+
+.ticketPreview__date {
+  font-size: 11px;
+  color: #444;
+}
+
+.ticketPreview__side {
+  width: 74px;
+  background: #8e0c25;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.ticketPreview__vale {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .12em;
+  color: #fff;
+}
+
+.ticketPreview__qr canvas {
+  border-radius: 60px;
+}
+
+
+.ticketPreview__main {
+  flex: 1;
+  padding: 14px;
+  position: relative;
+  text-align: center;
+  font-family: Georgia, serif;
+}
+
+.ticketPreview__main h3 {
+  margin: 0;
+  font-size: 22px;
+  color: #000;
+}
+
+.ticketPreview__date {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  font-size: 10px;
+  color: #333;
+}
+
+.ticketPreview__qr {
+  position: absolute;
+  bottom: 8px;
+  left: 10px;
+}
+.ticketActions {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+
 
 .closing{
   margin:0;

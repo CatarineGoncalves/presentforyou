@@ -15,13 +15,13 @@ let audio, progress, titleEl, playBtn;
 
 const ticketTypes = [
   { id: "tq",  name: "Tempo de qualidade à sua escolha", count: 10 },
-  { id: "ne",  name: "Não me estressar", count: 8 },
-  { id: "mb",  name: "Mordida & beijo", count: Infinity },
-  { id: "fil", name: "Filme", count: 4 },
-  { id: "ser", name: "Série", count: 4 },
-  { id: "rea", name: "Reality", count: 4 },
-  { id: "rso", name: "Reclamação sem ter opinião", count: 4 },
-  { id: "fmc", name: "Fazer merda sem consequência", count: 2 },
+  { id: "ne",  name: "Não te estressar por 2 dias", count: 8 },
+  { id: "mb",  name: "Ouvir que eu te amo", count: Infinity },
+  { id: "fil", name: "Ver um filme", count: 4 },
+  { id: "ser", name: "Assistir uma série", count: 4 },
+  { id: "rea", name: "Assistir um Reality que você quer", count: 4 },
+  { id: "rso", name: "Reclamação sobre qualquer coisa sem ter opinião", count: 4 },
+  { id: "fmc", name: "Fazer merda sem consequência por 2 horas", count: 2 },
 ];
 
 let selectedTicketId = ticketTypes[0].id;
@@ -93,41 +93,147 @@ function prevSong(){
 // TICKETS (picker, generate, download)
 function renderTicketPicker(){
   const wrap = document.getElementById("ticketPicker");
-  if(!wrap) return;
-  wrap.innerHTML="";
-  ticketTypes.forEach(t=>{
-    const el=document.createElement("div");
-    el.className="pickerItem"+(t.id===selectedTicketId?" is-selected":"");
-    el.innerHTML=`<strong>${t.name}</strong><span>${formatCount(t.count)}</span>`;
-    el.onclick=()=>{ selectedTicketId=t.id; renderTicketPicker(); }
-    wrap.appendChild(el);
+  if (!wrap) return;
+
+  wrap.innerHTML = "";
+
+  ticketTypes.forEach((t) => {
+    const item = document.createElement("div");
+    item.className = "pickerItem";
+    item.dataset.id = t.id;
+
+    if (t.id === selectedTicketId) {
+      item.classList.add("is-selected");
+    }
+
+    item.innerHTML = `
+      <div class="pickerItem__left">
+        <div class="pickerItem__name">${t.name}</div>
+        <div class="pickerItem__count">
+          disponível: <strong>${formatCount(t.count)}</strong>
+        </div>
+      </div>
+      <div class="pickerItem__radio"></div>
+    `;
+
+    item.addEventListener("click", () => {
+      // 1️⃣ salva seleção
+      selectedTicketId = t.id;
+
+      // 2️⃣ remove seleção visual de todos
+      document.querySelectorAll(".pickerItem").forEach(el => {
+        el.classList.remove("is-selected");
+      });
+
+      // 3️⃣ adiciona no clicado
+      item.classList.add("is-selected");
+
+      // 4️⃣ anima feedback
+      gsap.fromTo(item,
+        { scale: 0.97 },
+        { scale: 1, duration: 0.2, ease: "power2.out" }
+      );
+    });
+
+    wrap.appendChild(item);
   });
 }
+
 
 function initTickets(){
   renderTicketPicker();
 
   document.getElementById("genTicket")?.addEventListener("click",()=>{
-    const t=ticketTypes.find(x=>x.id===selectedTicketId);
+    const t = ticketTypes.find(x=>x.id===selectedTicketId);
     if(!t || (t.count!==Infinity && t.count<=0)) return;
     if(t.count!==Infinity) t.count--;
     renderTicketPicker();
-    baixarTicket(t.name);
+    gerarPreviewTicket(t);
   });
 }
 
-function baixarTicket(nome){
-  document.getElementById("ticketName").innerText = nome;
-  document.getElementById("ticketDate").innerText =
-    new Date().toLocaleDateString("pt-BR");
+function gerarPreviewTicket(ticket){
+  if (!ticket || !ticket.name) return;
 
-  html2canvas(document.getElementById("ticketCanvas")).then(canvas=>{
-    const a=document.createElement("a");
-    a.download=`vale-${nome.replace(/\s+/g,"-")}.png`;
-    a.href=canvas.toDataURL("image/png");
+  const out = document.getElementById("ticketsOut");
+  if (!out) return;
+
+  out.innerHTML = "";
+
+  const code = serial();
+  const now = new Date();
+  const date = now.toLocaleDateString("pt-BR");
+  const time = now.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "ticket ticket--preview";
+
+  wrapper.innerHTML = `
+    <div class="ticketPreview">
+
+      <!-- LADO ESQUERDO -->
+      <div class="ticketPreview__side">
+        <span class="ticketPreview__vale">VALE</span>
+      </div>
+
+      <!-- CONTEÚDO -->
+      <div class="ticketPreview__main">
+        <span class="ticketPreview__label">Você resgatou o ticket</span>
+
+        <h3 class="ticketPreview__title">${ticket.name}</h3>
+
+        <span class="ticketPreview__date">
+          ${date} às ${time}
+        </span>
+
+        <span class="ticketPreview__badge">SELECIONADO</span>
+      </div>
+
+    </div>
+
+  `;
+
+  out.appendChild(wrapper);
+
+  // QR CODE
+  const qrEl = wrapper.querySelector(".ticketPreview__qr");
+  new QRCode(qrEl, {
+    text: code,
+    width: 56,
+    height: 56
+  });
+
+  // Download
+  wrapper.querySelector("button").addEventListener("click", () => {
+    baixarTicketFinal(ticket.name, code, `${date} ${time}`);
+  });
+
+  gsap.from(wrapper, {
+    opacity: 0,
+    y: 18,
+    duration: 0.5,
+    ease: "power2.out"
+  });
+}
+
+
+
+function baixarTicketFinal(nome, code, date){
+  document.getElementById("ticketName").innerText = nome;
+  document.querySelector(".ticket__code").innerText = code;
+  document.getElementById("ticketDate").innerText = date;
+
+  html2canvas(document.getElementById("ticketCanvas"), {
+    scale: 2
+  }).then(canvas=>{
+    const a = document.createElement("a");
+    a.download = `vale-${nome.replace(/\s+/g,"-")}.png`;
+    a.href = canvas.toDataURL("image/png");
     a.click();
   });
 }
+
+
 
 
 // HERO CAROUSEL
