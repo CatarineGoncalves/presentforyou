@@ -373,6 +373,17 @@ function initAnimations(){
   }
 });
 
+   gsap.from(".section--playlist-final .card", {
+  opacity: 0,
+  y: 20,
+  duration: 0.8,
+  ease: "power2.out",
+  scrollTrigger: {
+    trigger: ".section--playlist-final",
+    start: "top 80%",
+  }
+});
+
 }
 
 function initTypewriter() {
