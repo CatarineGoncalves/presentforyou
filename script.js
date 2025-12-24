@@ -147,23 +147,58 @@ function initHeroCarousel(){
 
 
 // TIMER (relationship elapsed)
+
+
+function updateWithAnim(el, value) {
+  if (el.textContent === String(value)) return;
+
+  gsap.to(el, {
+    opacity: 0,
+    y: -6,
+    duration: 0.2,
+    ease: "power2.out",
+    onComplete: () => {
+      el.textContent = value;
+      gsap.fromTo(
+        el,
+        { opacity: 0, y: 6 },
+        { opacity: 1, y: 0, duration: 0.25, ease: "power2.out" }
+      );
+    }
+  });
+}
+
 function initTimer(){
-  const d=document.getElementById("tDays"),
-        h=document.getElementById("tHours"),
-        m=document.getElementById("tMins"),
-        s=document.getElementById("tSecs");
-  if(!d) return;
+  const elD = document.getElementById("tDays");
+  const elH = document.getElementById("tHours");
+  const elM = document.getElementById("tMins");
+  const elS = document.getElementById("tSecs");
+  if (!elD || !elH || !elM || !elS) return;
 
   const start = new Date(relationshipStartISO).getTime();
-  setInterval(()=>{
+
+  function tick(){
     let diff = Date.now() - start;
-    d.textContent = Math.floor(diff/86400000);
-    diff%=86400000;
-    h.textContent = pad2(Math.floor(diff/3600000));
-    diff%=3600000;
-    m.textContent = pad2(Math.floor(diff/60000));
-    s.textContent = pad2(Math.floor(diff/1000));
-  },1000);
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    diff -= days * (1000 * 60 * 60 * 24);
+
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    diff -= hours * (1000 * 60 * 60);
+
+    const mins = Math.floor(diff / (1000 * 60));
+    diff -= mins * (1000 * 60);
+
+    const secs = Math.floor(diff / 1000);
+
+    updateWithAnim(elD, days);
+    updateWithAnim(elH, pad2(hours));
+    updateWithAnim(elM, pad2(mins));
+    updateWithAnim(elS, pad2(secs));
+  }
+
+  tick();                 // primeira execução imediata
+  setInterval(tick, 1000);
 }
 
 
@@ -236,7 +271,7 @@ function initTypewriter() {
   const el = document.getElementById("typewriter");
   if (!el) return;
 
-  const text = "Você precisa fazer tudo o que puder para chegar à única mulher que fará tudo isso valer a pena.";
+  const text = "Você precisa fazer tudo o que puder para chegar à única mulher que fará tudo isso valer a pena - Jim Halpert";
   let i = 0;
 
   ScrollTrigger.create({
