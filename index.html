@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Meia noite eu te conto</title>
+    <meta name="theme-color" content="#0b0a12" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <!-- Snow canvas -->
+    <canvas id="snow" aria-hidden="true"></canvas>
+
+    <!-- Top tiny Xmas strip -->
+    <div class="xmas-strip" role="presentation">
+      <img
+        class="xmas-gif"
+        src="./img/santa.gif"
+        alt=""
+        onerror="this.style.display='none'"
+      />
+      <span>Feliz Natal bananinha</span>
+      <img
+        class="xmas-gif"
+        src="./img/reindeer.gif"
+        alt=""
+        onerror="this.style.display='none'"
+      />
+    </div>
+
+    <!-- HERO / CAROUSEL -->
+    <header class="hero" id="top">
+      <div class="hero__overlay" aria-hidden="true"></div>
+
+      <div class="hero__carousel" aria-label="Carrossel de fotos">
+        <div class="hero__slides" id="heroSlides">
+          <figure class="hero__slide is-active">
+            <img
+              src="./img/foto1.jpg"
+              alt="Foto 1"
+              onerror="this.closest('.hero__slide').style.display='none'"
+            />
+          </figure>
+          <figure class="hero__slide">
+            <img
+              src="./img/foto2.jpg"
+              alt="Foto 2"
+              onerror="this.closest('.hero__slide').style.display='none'"
+            />
+          </figure>
+          <figure class="hero__slide">
+            <img
+              src="./img/foto3.jpg"
+              alt="Foto 3"
+              onerror="this.closest('.hero__slide').style.display='none'"
+            />
+          </figure>
+          <figure class="hero__slide">
+            <img
+              src="./img/foto4.jpg"
+              alt="Foto 4"
+              onerror="this.closest('.hero__slide').style.display='none'"
+            />
+          </figure>
+          <figure class="hero__slide">
+            <img
+              src="./img/foto5.jpg"
+              alt="Foto 5"
+              onerror="this.closest('.hero__slide').style.display='none'"
+            />
+          </figure>
+        </div>
+
+        <div class="hero__dots" id="heroDots" aria-hidden="true"></div>
+      </div>
+
+      <div class="hero__content">
+        <p class="kicker reveal">Meia noite eu te conto 🌙</p>
+
+        <h1 class="title reveal">
+          Lila,
+          <span class="title__sub">Tudo que eu quero de Natal, é você</span>
+        </h1>
+
+        <div
+          class="hero__actions reveal"
+          style="display: flex; flex-direction: column"
+        >
+          <a class="btn btn--primary" href="#trilha">▶ começar</a>
+          <a class="btn btn--ghost" href="#tempo">hoje faz…</a>
+        </div>
+
+        <div class="hero__hint reveal">Feliz Natal ✨</div>
+      </div>
+    </header>
+
+    <main id="main">
+      <!-- TRILHA -->
+      <section class="section" id="trilha">
+        <div class="section__head">
+          <h2 class="reveal" style="text-align: center">
+            Nossa trilha de Natal
+          </h2>
+          <p class="muted reveal" style="text-align: center">
+            Só pra entrar no clima
+          </p>
+        </div>
+
+        <div class="card reveal">
+          <div class="player">
+            <div class="player__info">
+              <strong id="songTitle">Audio</strong>
+              <span id="artistName" class="muted"></span>
+            </div>
+
+            <input type="range" id="progress" value="0" min="0" max="100" />
+
+            <div class="player__controls">
+              <button onclick="prevSong()">⏮</button>
+              <button onclick="togglePlay()">▶</button>
+              <button onclick="nextSong()">⏭</button>
+            </div>
+
+            <audio id="audio"></audio>
+          </div>
+        </div>
+      </section>
+
+      <!-- TEXTO DE ABERTURA + FOTO1 -->
+      <section class="section" id="abertura">
+        <div class="section__head" style="text-align: center">
+          <h2 class="reveal">✨</h2>
+        </div>
+
+        <div class="opening reveal" style="text-align: center">
+          <p class="opening__line">Coloca o (meu) fone.</p>
+        </div>
+
+        <div class="card reveal">
+          <img
+            class="photo"
+            src="./img/foto6.jpeg"
+            alt="Foto 1"
+            onerror="this.style.display='none'"
+          />
+
+          <p class="text8" style="margin-top: 40px">
+            Oi, meu presente de Natal. Eu não planejei direito essa surpresa,
+            mas espero que você goste. Não foi algo embalado, pensado ou
+            escolhido em vitrine; foi um mix de tudo que a gente viveu e que, de
+            algum jeito, nos trouxe até aqui. Amar você é simples, mesmo quando
+            é intenso, e ao mesmo tempo complexo, justamente porque é real. Eu
+            só quero continuar com o meu maior presente de 2025 e ter o prazer
+            de viver com você do jeito que você é.
+          </p>
+        </div>
+      </section>
+
+      <!-- TEMPO -->
+      <section class="section" id="tempo">
+        <div class="section__head">
+          <h2 class="reveal" style="text-align: center">Hoje faz…</h2>
+        </div>
+
+        <div class="timer card reveal" aria-label="Contador do relacionamento">
+          <div class="timer__grid">
+            <div class="timer__box">
+              <div class="timer__num" id="tDays">0</div>
+              <div class="timer__lab">dias</div>
+            </div>
+            <div class="timer__box">
+              <div class="timer__num" id="tHours">0</div>
+              <div class="timer__lab">horas</div>
+            </div>
+            <div class="timer__box">
+              <div class="timer__num" id="tMins">0</div>
+              <div class="timer__lab">min</div>
+            </div>
+            <div class="timer__box">
+              <div class="timer__num" id="tSecs">0</div>
+              <div class="timer__lab">seg</div>
+            </div>
+          </div>
+          <p class="timer__sub muted" id="timerSub">
+            e eu continuo amando você.
+          </p>
+        </div>
+      </section>
+
+      <!-- FOTO2 + TEXTO -->
+      <section class="section" id="foto2sec">
+        <div class="card reveal">
+          <img
+            class="photo"
+            src="./img/foto7.jpeg"
+            alt="Foto 2"
+            onerror="this.style.display='none'"
+          />
+
+          <p class="text8" style="margin-top: 40px">
+            Você não é simples. Quando eu penso em você, penso em tudo que
+            aquece, que me faz questionar e me faz amadurecer, e acredito que
+            seja o mesmo com você. Você tem razão quando diz que somos como água
+            e fogo, mas, ao contrário do que pensa, quando eu sou fogo, você é
+            uma cachoeira. Você me faz bem até nos meus dias de mais caos, mesmo
+            quando é você que os causa (kkkk). Eu admiro muito o teu lado de
+            sempre ir além, a sua vontade de aprender, a forma como apenas
+            existe e o mundo que desbrava sozinha, a sua coragem silenciosa que
+            talvez nem perceba. Você é casa, mesmo sem prometer nada, e isso é
+            mais do que eu poderia pedir de presente.
+          </p>
+        </div>
+      </section>
+
+      <!-- FRASE DO JIM HALPERT -->
+      <section class="section section--typewriter">
+        <p id="typewriter" class="typewriter"></p>
+      </section>
+
+      <!-- ACORDEÃO -->
+      <section class="section" id="acordeao">
+        <div class="section__head">
+          <h2 class="reveal" style="text-align: center">Abre aqui</h2>
+          <p class="muted reveal" style="text-align: center">
+            pra ver o que eu acho (de verdade).
+          </p>
+        </div>
+
+        <div class="accordion card reveal" id="accordion">
+          <details>
+            <summary>O que eu amo em você</summary>
+            <p>
+              Eu amo você do jeito que você sente o mundo, com intensidade e
+              verdade, mesmo quando isso machuca. Amo a forma como você existe, 
+							como seu sorriso aparece nos momentos mais inesperados. Amo o som da sua voz. 
+							Amo suas manias, seu estresse (tudo bem, irei feliz buscar o balde), 
+							sua vontade firme, seu gosto musical, seu
+              jeito de se expressar. Amo o aconchego que você cria quando fala,
+              a força que você carrega mesmo quando não percebe, e até as
+              verdades difíceis que você aprende a aceitar, porque elas também
+              fazem parte de quem você é.
+            </p>
+          </details>
+
+          <details>
+            <summary>O que eu admiro em você</summary>
+            <p>
+              Eu te admiro pela maneira como continua, mesmo cansada, mesmo jogando 
+							tudo para o alto, e volta a luta. Pela honestidade que tem consigo mesma, 
+							pela coragem de não se diminuir
+              para caber em lugares que não te respeitam. Pelo seu senso de
+              justiça, pela fidelidade que você mantém não só com os outros, mas
+              principalmente com você. Admiro o esforço que você faz todos os
+              dias, o autocontrole que constrói aos poucos, a disciplina, o
+              cuidado com quem está ao seu redor e a preocupação genuína que
+              demonstra, mesmo quando ninguém está olhando.
+            </p>
+          </details>
+
+          <details>
+            <summary>O que me inspira em você</summary>
+            <p>
+              Você me inspira pela curiosidade que tem pelo mundo e pela vontade
+              constante de aprender coisas novas. Pelo movimento contínuo de
+              crescimento, pela persistência, pela forma como observa, fala e
+              tenta mudar e claro, a paciência. Pela sua visão realista da vida, que não ignora as
+              dificuldades, mas também não se deixa perder a capacidade de sonhar e seguir
+              em frente.
+            </p>
+          </details>
+
+          <details>
+            <summary>O que eu desejo pra você</summary>
+            <p>
+              Tudo o que eu desejo é que você tenha liberdade para ser
+              exatamente quem é. Que tenha tempo para viver sem pressa e uma
+              vida que valha a pena agradecer todos os dias. Que consiga deixar
+              para trás tudo o que te faz mal, que o mundo te abrace com cuidado
+              e te trate com a gentileza que você merece. Que realize seus
+              sonhos, mude de lugar, more na Italia, ou em todos os países que deseja, faça a tatuagem nas costas, se livre das
+              bagagens que não te pertencem mais ou nunca te pertenceram. Que encontre paz, equilíbrio, menos
+              estresse e mais leveza. Que viva a vida que sempre sonhou viver.
+            </p>
+          </details>
+        </div>
+      </section>
+
+      <!-- INICIO E FIM -->
+      <section class="section section--timeline reveal" id="timeline">
+        <div class="section__head">
+          <h2>De onde viemos — e pra onde vamos</h2>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline__item">
+            <img src="./img/inicio.jpeg" alt="como começamos" />
+            <span class="timeline__label">como começamos</span>
+          </div>
+
+          <div class="timeline__item timeline__item--future">
+            <img src="./img/fim.jpeg" alt="como espero que terminemos" />
+            <span class="timeline__label">como espero que terminemos</span>
+          </div>
+        </div>
+
+        <p class="timeline__quote">
+          “Plan A Was Marrying Her A Long Time Ago. Pretty Much The Day I Met
+          Her.”
+          <span>— Jim Halpert</span>
+        </p>
+      </section>
+
+      <!-- PRESENTES: GATOS, SHOWS, LANCHES, VIAGENS, FILMES -->
+      <section class="section" id="presentes">
+        <div class="section__head">
+          <h2 class="reveal" style="margin-bottom: 30px; text-align: center">
+            Coisas que, se eu pudesse te dar, eu daria
+          </h2>
+        </div>
+
+        <div class="accordion card reveal">
+          <details>
+            <summary>🐱 Gatinhos fofinhos</summary>
+            <div class="gallery">
+              <img src="./img/gato1.jpeg" />
+              <img src="./img/gato2.jpeg" />
+              <img src="./img/gato3.jpeg" />
+              <img src="./img/gato4.jpeg" />
+              <img src="./img/gato5.jpeg" />
+            </div>
+
+            <details>
+              <summary>Galeria Secreta</summary>
+              <p>
+                Desculpa, mas eu ia tentar te convencer aqui também, vamos
+                adotar um cachorro do máscara? Pfv
+              </p>
+              <div class="gallery">
+                <img src="./img/dog1.jpeg" />
+                <img src="./img/dog2.jpeg" />
+                <img src="./img/dog3.jpeg" />
+              </div>
+            </details>
+          </details>
+
+          <details>
+            <summary>🎶 Shows pra tirar o estresse</summary>
+            <ul class="list">
+              <li>System of a Down</li>
+              <li>Muse</li>
+              <li>Arctic Monkeys</li>
+              <li>Liniker</li>
+              <li>Evanescence</li>
+              <li>Slipknot</li>
+              <li>Limp Bizkit</li>
+              <li>Pedro Sampaio</li>
+              <li>Korn</li>
+              <li>Luan Santana</li>
+              <li>Anitta</li>
+              <li>Good Kid</li>
+            </ul>
+          </details>
+
+          <details>
+            <summary>
+              🍔 Lanchinhos depois de um dia de trabalho desonesto
+            </summary>
+            <ul class="list">
+              <li>Hambúrguer artesanal</li>
+              <li>Francesinha</li>
+              <li>Batata com cheddar e bacon</li>
+              <li>Milkshake de maracujá</li>
+              <li>Coquinha Zero</li>
+              <li>Macarrão com Salsicha</li>
+            </ul>
+          </details>
+
+          <details>
+            <summary>✈️ Viagens incríveis para decidirmos</summary>
+            <ul class="list">
+              <li>Tailândia</li>
+              <li>Itália</li>
+              <li>Islândia</li>
+              <li>Amsterdã</li>
+              <li>Albânia</li>
+              <li>África do Sul</li>
+              <li>Vietnã</li>
+              <li>Espanha</li>
+              <li>Japão</li>
+            </ul>
+          </details>
+        </div>
+      </section>
+
+      <!-- TICKETS -->
+      <section class="section" id="tickets">
+        <div class="section__head">
+          <h2 class="reveal" style="text-align: center">
+            Como Natal não é Natal sem presente…
+          </h2>
+          <p class="muted reveal" style="text-align: center">
+            escolhe e gera um ticket. (sim, é oficial.)
+          </p>
+        </div>
+
+        <div class="card reveal">
+          <div class="ticketPicker" id="ticketPicker"></div>
+
+          <div class="row row--wrap">
+            <button class="btn btn--primary" id="genTicket" type="button">
+              Gerar ticket
+            </button>
+            <button class="btn btn--ghost" id="clearTickets" type="button">
+              Limpar
+            </button>
+          </div>
+
+          <div
+            class="ticketsOut"
+            id="ticketsOut"
+            aria-label="Tickets gerados"
+          ></div>
+        </div>
+
+        <!-- 🔽 TICKET CANVAS (OCULTO, SÓ PRA DOWNLOAD) -->
+        <div
+          class="ticketCanvasWrapper"
+          style="position: absolute; left: -9999px; top: -9999px"
+        >
+          <div id="ticketCanvas" class="ticket ticket--print">
+            <div class="ticket__side">
+              <span class="ticket__label">vale</span>
+              <span class="ticket__code">LILA-2412</span>
+            </div>
+
+            <div class="ticket__main">
+              <h3 id="ticketName">um beijo</h3>
+              <p class="ticket__sub">(bem demorado)</p>
+              <span id="ticketDate" class="ticket__date"></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FECHAMENTO -->
+      <section class="section" id="fim">
+        <div class="card reveal">
+          <img
+            class="photo"
+            src="./img/foto8.jpeg"
+            alt="Foto 3"
+            onerror="this.style.display='none'"
+          />
+
+          <p class="closing" style="margin-top: 40px">
+            Você estava no meu passado.<br />
+            Você está no meu presente.<br />
+            E eu quero você no meu futuro.<br /><br />
+
+            Não posso te dar tudo o que você merece,<br />
+            mas pelo menos posso torcer para que um dia<br />
+            tudo que você sonha, se torne a realidade que deseja.<br /><br />
+
+            Você é o amor da minha vida e pra minha vida.<br />
+            Não existiria quem eu sou agora se não fosse por você.<br />
+            Eu amo você por completo, com tudo que veio no pacote.<br /><br />
+
+            O que você esconde ou não, você é o que eu quero de Natal,<br />
+            de aniversário, de ano novo, e todas as datas que ganhamos presente
+            e as que posso inventar para te-la mais uma vez.<br /><br />
+
+            pois meu amor, meu presente é você. <br />
+            Feliz Natal bananinha🎄
+          </p>
+
+          <a class="btn btn--ghost" style="margin-top: 40px" href="#top"
+            >voltar pro começo</a
+          >
+        </div>
+      </section>
+    </main>
+
+    <!-- GSAP -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,267 @@
+// CONFIG
+const tracks = [
+  { title: "All I Wanted", file: "aliwanted.mp3" },
+  { title: "Dandelions", file: "dandelions.mp3" },
+  { title: "Good Enough", file: "goodenough.mpeg" },
+  { title: "I Wanna Be Yours", file: "iwannabeyours.mp3" },
+  { title: "Nothing Else Matters", file: "nothingelsematter.mp3" },
+  { title: "Presente", file: "presente.mpeg" },
+  { title: "The Only Exception", file: "theonlyexception.mp3" },
+  { title: "Those Eyes", file: "thoseeyes.mp3" }
+];
+
+let currentTrack = 0;
+let audio, progress, titleEl, playBtn;
+
+const ticketTypes = [
+  { id: "tq",  name: "Tempo de qualidade à sua escolha", count: 10 },
+  { id: "ne",  name: "Não me estressar", count: 8 },
+  { id: "mb",  name: "Mordida & beijo", count: Infinity },
+  { id: "fil", name: "Filme", count: 4 },
+  { id: "ser", name: "Série", count: 4 },
+  { id: "rea", name: "Reality", count: 4 },
+  { id: "rso", name: "Reclamação sem ter opinião", count: 4 },
+  { id: "fmc", name: "Fazer merda sem consequência", count: 2 },
+];
+
+let selectedTicketId = ticketTypes[0].id;
+
+const relationshipStartISO = "2025-07-04T00:00:00-03:00";
+
+
+// HELPERS
+function pad2(n){ return String(n).padStart(2,"0"); }
+function formatCount(n){ return n === Infinity ? "∞" : n; }
+function serial(){
+  const chars = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+  const now = new Date();
+  return `LILA-${pad2(now.getDate())}${pad2(now.getMonth()+1)}-${chars[Math.random()*chars.length|0]}${chars[Math.random()*chars.length|0]}`;
+}
+
+
+// AUDIO PLAYER (load / controls / navigation)
+function initAudioPlayer(){
+  audio = document.getElementById("audio");
+  progress = document.getElementById("progress");
+  titleEl = document.getElementById("songTitle");
+  playBtn = document.getElementById("playBtn");
+  if (!audio) return;
+
+  loadTrack(currentTrack);
+
+  audio.addEventListener("timeupdate", () => {
+    if (!audio.duration) return;
+    progress.value = (audio.currentTime / audio.duration) * 100;
+  });
+
+  progress.addEventListener("input", () => {
+    audio.currentTime = (progress.value / 100) * audio.duration;
+  });
+}
+
+function loadTrack(i){
+  const t = tracks[i];
+  titleEl.textContent = t.title;
+  audio.src = `./music/${t.file}`;
+}
+
+function togglePlay(){
+  if (audio.paused){
+    audio.play();
+    playBtn.textContent = "⏸";
+  } else {
+    audio.pause();
+    playBtn.textContent = "▶";
+  }
+}
+
+function nextSong(){
+  currentTrack = (currentTrack + 1) % tracks.length;
+  loadTrack(currentTrack);
+  audio.play();
+  playBtn.textContent = "⏸";
+}
+
+function prevSong(){
+  currentTrack = (currentTrack - 1 + tracks.length) % tracks.length;
+  loadTrack(currentTrack);
+  audio.play();
+  playBtn.textContent = "⏸";
+}
+
+
+// TICKETS (picker, generate, download)
+function renderTicketPicker(){
+  const wrap = document.getElementById("ticketPicker");
+  if(!wrap) return;
+  wrap.innerHTML="";
+  ticketTypes.forEach(t=>{
+    const el=document.createElement("div");
+    el.className="pickerItem"+(t.id===selectedTicketId?" is-selected":"");
+    el.innerHTML=`<strong>${t.name}</strong><span>${formatCount(t.count)}</span>`;
+    el.onclick=()=>{ selectedTicketId=t.id; renderTicketPicker(); }
+    wrap.appendChild(el);
+  });
+}
+
+function initTickets(){
+  renderTicketPicker();
+
+  document.getElementById("genTicket")?.addEventListener("click",()=>{
+    const t=ticketTypes.find(x=>x.id===selectedTicketId);
+    if(!t || (t.count!==Infinity && t.count<=0)) return;
+    if(t.count!==Infinity) t.count--;
+    renderTicketPicker();
+    baixarTicket(t.name);
+  });
+}
+
+function baixarTicket(nome){
+  document.getElementById("ticketName").innerText = nome;
+  document.getElementById("ticketDate").innerText =
+    new Date().toLocaleDateString("pt-BR");
+
+  html2canvas(document.getElementById("ticketCanvas")).then(canvas=>{
+    const a=document.createElement("a");
+    a.download=`vale-${nome.replace(/\s+/g,"-")}.png`;
+    a.href=canvas.toDataURL("image/png");
+    a.click();
+  });
+}
+
+
+// HERO CAROUSEL
+function initHeroCarousel(){
+  const slides = document.querySelectorAll(".hero__slide");
+  if (!slides.length) return;
+  let index = 0;
+  slides.forEach((s,i)=>s.style.opacity=i?0:1);
+
+  setInterval(()=>{
+    const prev = index;
+    index = (index+1)%slides.length;
+    gsap.to(slides[prev], {opacity:0, duration:0.6});
+    gsap.to(slides[index], {opacity:1, duration:0.8});
+  },4500);
+}
+
+
+// TIMER (relationship elapsed)
+function initTimer(){
+  const d=document.getElementById("tDays"),
+        h=document.getElementById("tHours"),
+        m=document.getElementById("tMins"),
+        s=document.getElementById("tSecs");
+  if(!d) return;
+
+  const start = new Date(relationshipStartISO).getTime();
+  setInterval(()=>{
+    let diff = Date.now() - start;
+    d.textContent = Math.floor(diff/86400000);
+    diff%=86400000;
+    h.textContent = pad2(Math.floor(diff/3600000));
+    diff%=3600000;
+    m.textContent = pad2(Math.floor(diff/60000));
+    s.textContent = pad2(Math.floor(diff/1000));
+  },1000);
+}
+
+
+// ACCORDION (details reveal)
+function initAccordion(){
+  document.querySelectorAll("details").forEach(d=>{
+    d.addEventListener("toggle",()=>{
+      if(d.open){
+        gsap.from(d.querySelector("p"),{opacity:0,y:10,duration:0.4});
+      }
+    });
+  });
+}
+
+
+// SNOW (canvas)
+function initSnow(){
+  const c=document.getElementById("snow");
+  if(!c) return;
+  const ctx=c.getContext("2d");
+  let w,h,flakes=[];
+  function resize(){
+    w=c.width=innerWidth;
+    h=c.height=innerHeight;
+    flakes=[...Array(80)].map(()=>({x:Math.random()*w,y:Math.random()*h,r:Math.random()*2+1,s:Math.random()+0.5}));
+  }
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    flakes.forEach(f=>{
+      f.y+=f.s;
+      if(f.y>h)f.y=0;
+      ctx.beginPath();
+      ctx.arc(f.x,f.y,f.r,0,Math.PI*2);
+      ctx.fillStyle="rgba(255,255,255,.6)";
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  resize(); draw();
+  window.onresize=resize;
+}
+
+
+// GSAP ANIMATIONS (scroll reveal)
+function initAnimations(){
+  gsap.utils.toArray(".reveal").forEach(el=>{
+    gsap.from(el,{
+      opacity:0,y:16,filter:"blur(6px)",
+      scrollTrigger:{trigger:el,start:"top 85%"},
+      duration:.7,ease:"power2.out"
+    });
+  });
+
+
+  gsap.from(".timeline__item", {
+  opacity: 0,
+  y: 20,
+  stagger: 0.25,
+  duration: 0.8,
+  ease: "power2.out",
+  scrollTrigger: {
+    trigger: "#timeline",
+    start: "top 80%"
+  }
+});
+
+}
+
+function initTypewriter() {
+  const el = document.getElementById("typewriter");
+  if (!el) return;
+
+  const text = "Você precisa fazer tudo o que puder para chegar à única mulher que fará tudo isso valer a pena.";
+  let i = 0;
+
+  ScrollTrigger.create({
+    trigger: el,
+    start: "top 80%",
+    once: true,
+    onEnter: () => {
+      const interval = setInterval(() => {
+        el.textContent += text.charAt(i);
+        i++;
+        if (i >= text.length) clearInterval(interval);
+      }, 55); // velocidade da digitação
+    }
+  });
+}
+
+
+// INIT
+document.addEventListener("DOMContentLoaded",()=>{
+  initSnow();
+  initHeroCarousel();
+  initAudioPlayer();
+  initTimer();
+  initAccordion();
+  initTickets();
+  initAnimations();
+   initTypewriter();
+});
