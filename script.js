@@ -1,5 +1,7 @@
 // CONFIG
 const tracks = [
+   { title: "Mistletoe", file: "mistletoe.mp3" },
+  { title: "Fa La La", file: "fa-la-la.mp3" },
   { title: "All I Wanted", file: "aliwanted.mp3" },
   { title: "Dandelions", file: "dandelions.mp3" },
   { title: "Good Enough", file: "goodenough.mpeg" },
